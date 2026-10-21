@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aynur Hoca ile Boyama Teknikleri - Sanat Portalı & Eğitim Platformu</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        art: {
+                            50: '#fffbf5',
+                            100: '#fef3e2',
+                            200: '#fbe2c5',
+                            500: '#e07a5f',
+                            600: '#d15838',
+                            700: '#b43f22',
+                            800: '#3d405b',
+                            900: '#2b2d42',
+                            gold: '#f4a261',
+                            teal: '#2a9d8f'
+                        }
+                    },
+                    fontFamily: {
+                        handwriting: ['Caveat', 'cursive'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .paint-splatter {
+            background-image: radial-gradient(#e07a5f 15%, transparent 16%), radial-gradient(#f4a261 15%, transparent 16%);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;
+            opacity: 0.05;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e07a5f;
+            border-radius: 10px;
+        }
+        .nav-link.active {
+            color: #e07a5f;
+            font-weight: 700;
+            border-bottom: 3px solid #e07a5f;
+        }
+    </style>
+</head>
+<body class="bg-art-50 text-art-900 font-sans min-h-screen flex flex-col relative antialiased selection:bg-art-500 selection:text-white">
+
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 paint-splatter pointer-events-none z-0"></div>
+
+    <!-- HEADER / BRANDING & USER STATUS -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-art-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-art-500 via-art-gold to-art-teal flex items-center justify-center text-white text-2xl shadow-md">
+                        <i class="fa-solid fa-palette"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-tight text-art-900 leading-none">
+                            Aynur Hoca <span class="text-art-500 font-handwriting text-2xl ml-0.5">ile Boyama Teknikleri</span>
+                        </h1>
+                        <p class="text-[11px] text-slate-500 mt-0.5">Sanat Portalı & Eğitim Platformu</p>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="hidden md:flex items-center space-x-6 text-xs font-semibold">
+                    <a href="#lessons" class="nav-link active py-2 transition-colors hover:text-art-500">Ders Kataloğu</a>
+                    <a href="#canvas" class="nav-link py-2 transition-colors hover:text-art-500">Dijital Tuval</a>
+                    <a href="#adminSection" id="adminNavBtn" class="hidden nav-link py-2 text-art-600 font-bold transition-colors hover:text-art-700 flex items-center gap-1.5 bg-art-100/70 px-3 rounded-full">
+                        <i class="fa-solid fa-shield-halved text-art-500"></i> Video Ekle & Yönet (Admin)
+                    </a>
+                </nav>
+
+                <!-- User Account Actions -->
+                <div class="flex items-center space-x-3">
+                    <div id="loggedOutState" class="flex items-center space-x-2">
+                        <button onclick="openAuthModal('login')" class="bg-art-100 hover:bg-art-200 text-art-800 px-3.5 py-2 rounded-xl text-xs font-bold transition-all">
+                            Giriş Yap
+                        </button>
+                        <button onclick="openAuthModal('register')" class="bg-art-500 hover:bg-art-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md transition-all">
+                            Kayıt Ol
+                        </button>
+                    </div>
+
+                    <div id="loggedInState" class="hidden flex items-center space-x-3">
+                        <div class="flex items-center space-x-2 bg-art-50 border border-art-200 px-3 py-1.5 rounded-full">
+                            <span id="userBadgeRole" class="bg-art-gold text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase">Öğrenci</span>
+                            <span id="userDisplayName" class="text-xs font-bold text-art-900">Kullanıcı</span>
+                        </div>
+                        <button onclick="logoutUser()" title="Çıkış Yap" class="text-slate-400 hover:text-red-600 text-sm p-2 transition-colors">
+                            <i class="fa-solid fa-right-from-bracket"></i> Çıkış
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Row -->
+        <div class="md:hidden border-t border-art-100 bg-art-50/90 px-4 py-2 flex justify-around text-xs font-semibold overflow-x-auto whitespace-nowrap">
+            <a href="#lessons" class="text-art-700 px-2 py-1"><i class="fa-solid fa-film text-art-500 mr-1"></i> Dersler</a>
+            <a href="#canvas" class="text-art-700 px-2 py-1"><i class="fa-solid fa-paintbrush text-art-500 mr-1"></i> Tuval</a>
+            <a href="#adminSection" id="mobileAdminNavBtn" class="hidden text-art-600 font-bold px-2 py-1"><i class="fa-solid fa-plus-circle mr-1"></i> Video Yönetimi</a>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12 z-10">
+
+        <!-- SECTION 1: VIDEO LESSON CATALOG & INTERACTIVE PLAYER -->
+        <section id="lessons" class="scroll-mt-24 space-y-6">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-art-200 pb-4">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-art-900 flex items-center gap-3">
+                        <i class="fa-solid fa-circle-play text-art-500"></i>
+                        Ders Kataloğu & Video Eğitimleri
+                    </h2>
+                    <p class="text-slate-600 text-sm mt-1">
+                        Aynur Hoca ve yetkili eğitmenler tarafından eklenen boyama videolarını izleyin, adımları uygulayın.
+                    </p>
+                </div>
+
+                <!-- Video Filter Category -->
+                <div class="flex items-center gap-2 overflow-x-auto pb-1">
+                    <button onclick="filterCategory('all')" class="cat-filter-btn active bg-art-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all">Tümü</button>
+                    <button onclick="filterCategory('ahsap')" class="cat-filter-btn bg-white border border-art-200 text-art-800 px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all">Ahşap</button>
+                    <button onclick="filterCategory('akrilik')" class="cat-filter-btn bg-white border border-art-200 text-art-800 px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all">Akrilik</button>
+                    <button onclick="filterCategory('suluboya')" class="cat-filter-btn bg-white border border-art-200 text-art-800 px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all">Suluboya</button>
+                    <button onclick="filterCategory('rolyef')" class="cat-filter-btn bg-white border border-art-200 text-art-800 px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all">Rölyef Pasta</button>
+                </div>
+            </div>
+
+            <!-- Empty State Container (Displayed when no videos exist) -->
+            <div id="emptyVideoState" class="hidden bg-white rounded-3xl border border-art-200 shadow-md p-10 text-center space-y-4">
+                <div class="w-20 h-20 bg-art-100 text-art-500 rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner">
+                    <i class="fa-solid fa-clapperboard"></i>
+                </div>
+                <h3 class="text-xl font-bold text-art-900">Henüz Ders Videosu Eklenmedi</h3>
+                <p class="text-xs text-slate-500 max-w-md mx-auto">
+                    Portalda henüz yayınlanmış bir boyama dersi bulunmuyor. Yönetici yetkisine sahip kullanıcılar (Berat, AynurHoca vb.) panel üzerinden hemen yeni video ekleyebilir.
+                </p>
+                <div id="emptyStateAdminPrompt" class="pt-2">
+                    <button onclick="openAuthModal('login')" class="bg-art-500 hover:bg-art-600 text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow-md transition-all">
+                        Yönetici Olarak Giriş Yap & Video Ekle
+                    </button>
+                </div>
+            </div>
+
+            <!-- Video Player Workspace Layout -->
+            <div id="videoPlayerWorkspace" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Active Video Player Frame -->
+                <div class="lg:col-span-7 bg-white rounded-3xl border border-art-200 shadow-md p-4 sm:p-5 space-y-4">
+                    <div class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-inner">
+                        <iframe id="videoIframe" class="w-full h-full" src="" title="Video Player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <span id="activeVideoCategory" class="bg-art-100 text-art-700 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider">Kategori</span>
+                            <h3 id="activeVideoTitle" class="text-xl font-bold text-art-900 mt-2">Ders Başlığı</h3>
+                            <p id="activeVideoAuthor" class="text-xs font-semibold text-art-500 mt-1">Eğitmen: Aynur Hoca</p>
+                        </div>
+
+                        <!-- Bookmark & Download Controls -->
+                        <div class="flex items-center space-x-2">
+                            <button onclick="toggleBookmarkCurrentVideo()" id="bookmarkBtn" class="p-2.5 bg-art-50 border border-art-200 hover:bg-art-100 text-art-800 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5" title="Favorilere Ekle">
+                                <i class="fa-regular fa-bookmark text-art-500 text-sm"></i> Kaydet
+                            </button>
+                            
+                            <!-- Download Video Button (Visible for Whitelisted Admins/Berat) -->
+                            <button id="downloadVideoBtn" onclick="downloadActiveVideo()" class="hidden p-2.5 bg-art-teal hover:bg-teal-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm" title="Videoyu İndir">
+                                <i class="fa-solid fa-download text-sm"></i> Videoyu İndir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Materials Checklist -->
+                    <div class="bg-art-50/80 rounded-2xl p-4 border border-art-100">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-art-800 flex items-center gap-2 mb-3">
+                            <i class="fa-solid fa-list-check text-art-500"></i> Derste Kullanılan Malzemeler
+                        </h4>
+                        <ul id="activeMaterialsList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700">
+                            <!-- Injected dynamically -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Video Step Notes & Lessons Catalog Grid -->
+                <div class="lg:col-span-5 space-y-6">
+                    <!-- Step Notes Container -->
+                    <div class="bg-white p-5 rounded-3xl border border-art-200 shadow-md space-y-3">
+                        <h4 class="text-sm font-bold text-art-900 flex items-center gap-2">
+                            <i class="fa-solid fa-clipboard-list text-art-500"></i> Adım Adım Uygulama Notları
+                        </h4>
+                        <div id="activeStepNotes" class="text-xs text-slate-600 leading-relaxed space-y-2 max-h-48 overflow-y-auto custom-scrollbar pr-2">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Video Catalog List -->
+                    <div class="bg-white p-5 rounded-3xl border border-art-200 shadow-md space-y-3">
+                        <h4 class="text-sm font-bold text-art-900 flex items-center justify-between">
+                            <span><i class="fa-solid fa-photo-film text-art-500 mr-2"></i> Eklenen Ders Videoları</span>
+                            <span id="videoCountBadge" class="text-[10px] bg-art-100 text-art-700 px-2 py-0.5 rounded-full font-bold">0 Video</span>
+                        </h4>
+
+                        <div id="videoCardsGrid" class="space-y-3 max-h-[380px] overflow-y-auto custom-scrollbar pr-1">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 2: ADMIN PANEL (AUTHORIZED USERS ONLY) -->
+        <section id="adminSection" class="hidden scroll-mt-24 space-y-6 bg-gradient-to-br from-art-100/60 to-amber-50/50 p-6 sm:p-8 rounded-3xl border-2 border-art-500/30 shadow-lg">
+            <div class="flex items-center justify-between border-b border-art-200 pb-4">
+                <div>
+                    <span class="bg-art-500 text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">Yetkili Yönetici Paneli</span>
+                    <h2 class="text-2xl font-bold text-art-900 mt-2 flex items-center gap-2">
+                        <i class="fa-solid fa-square-plus text-art-500"></i>
+                        Yeni Ders / Video Ekle & İndirme Yetkisi
+                    </h2>
+                    <p class="text-xs text-slate-600 mt-1">Bu alan sadece yetkili listede (<span class="font-mono text-art-700 font-bold">berat, Berat, AynurHoca, AynurAdmin</span>) yer alan kullanıcılara özeldir.</p>
+                </div>
+                <div class="hidden sm:block text-4xl text-art-500/20">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+            </div>
+
+            <form onsubmit="handleAddNewVideo(event)" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-art-800 uppercase tracking-wider mb-1">Ders Başlığı</label>
+                        <input type="text" id="newVideoTitle" required placeholder="Örn: Akrilik Boya ile Çiçek Desenleri" class="w-full bg-white border border-art-200 rounded-xl px-4 py-2.5 text-xs font-semibold focus:ring-2 focus:ring-art-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-art-800 uppercase tracking-wider mb-1">YouTube / Direkt Video Linki veya ID</label>
+                        <input type="text" id="newVideoUrl" required placeholder="https://www.youtube.com/watch?v=XXXXX veya doğrudan MP4 linki" class="w-full bg-white border border-art-200 rounded-xl px-4 py-2.5 text-xs font-semibold focus:ring-2 focus:ring-art-500 outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-art-800 uppercase tracking-wider mb-1">Kategori</label>
+                        <select id="newVideoCategory" class="w-full bg-white border border-art-200 rounded-xl px-4 py-2.5 text-xs font-semibold focus:ring-2 focus:ring-art-500 outline-none">
+                            <option value="ahsap">Ahşap Boyama</option>
+                            <option value="akrilik">Akrilik Resim</option>
+                            <option value="suluboya">Suluboya</option>
+                            <option value="rolyef">Rölyef Pasta & Stencil</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-art-800 uppercase tracking-wider mb-1">Gerekli Malzemeler (Virgülle ayırın)</label>
+                        <input type="text" id="newVideoMaterials" placeholder="Örn: Yassı fırça, Beyaz akrilik boya, Zımpara" class="w-full bg-white border border-art-200 rounded-xl px-4 py-2.5 text-xs font-semibold focus:ring-2 focus:ring-art-500 outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-art-800 uppercase tracking-wider mb-1">Adım Adım Uygulama Notları & Püf Noktaları</label>
+                    <textarea id="newVideoNotes" rows="3" placeholder="1. Zemin katı sürün. 2. Kuruduktan sonra hafif zımparalayın..." class="w-full bg-white border border-art-200 rounded-xl p-3 text-xs font-semibold focus:ring-2 focus:ring-art-500 outline-none"></textarea>
+                </div>
+
+                <div class="flex justify-end pt-2">
+                    <button type="submit" class="bg-art-500 hover:bg-art-600 text-white px-6 py-3 rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Videoyu Yayınla
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- SECTION 3: DIGITAL PRACTICE CANVAS -->
+        <section id="canvas" class="scroll-mt-24 space-y-6">
+            <div class="border-b border-art-200 pb-4">
+                <h2 class="text-2xl sm:text-3xl font-bold text-art-900 flex items-center gap-3">
+                    <i class="fa-solid fa-paintbrush text-art-500"></i>
+                    Dijital Deneme Tuvali
+                </h2>
+                <p class="text-slate-600 text-sm mt-1">
+                    Fırça tiplerini ve renk karışımlarını deneyin. Çiziminizi doğrudan cihazınıza indirebilirsiniz!
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                <!-- Controls Sidebar -->
+                <div class="lg:col-span-4 bg-white p-5 rounded-3xl border border-art-200 shadow-md space-y-5">
+                    
+                    <!-- Brush Types -->
+                    <div>
+                        <label class="block text-xs font-bold text-art-800 uppercase tracking-wider mb-2">Fırça Tipi Seçimi</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="setBrushType('flat')" id="btn-brush-flat" class="brush-btn active bg-art-500 text-white border border-art-500 rounded-xl p-2.5 text-xs font-bold flex items-center gap-2 transition-all">
+                                <i class="fa-solid fa-grip-lines"></i> Yassı Fırça
+                            </button>
+                            <button onclick="setBrushType('round')" id="btn-brush-round" class="brush-btn bg-art-50 hover:bg-art-100 text-art-800 border border-art-200 rounded-xl p-2.5 text-xs font-bold flex items-center gap-2 transition-all">
+                                <i class="fa-solid fa-pen-nib"></i> Yuvarlak
+                            </button>
+                            <button onclick="setBrushType('fan')" id="btn-brush-fan" class="brush-btn bg-art-50 hover:bg-art-100 text-art-800 border border-art-200 rounded-xl p-2.5 text-xs font-bold flex items-center gap-2 transition-all">
+                                <i class="fa-solid fa-fan"></i> Yelpaze
+                            </button>
+                            <button onclick="setBrushType('sponge')" id="btn-brush-sponge" class="brush-btn bg-art-50 hover:bg-art-100 text-art-800 border border-art-200 rounded-xl p-2.5 text-xs font-bold flex items-center gap-2 transition-all">
+                                <i class="fa-solid fa-circle-dot"></i> Sünger
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Size & Opacity -->
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-art-800 mb-1">
+                                <span>Fırça Boyutu</span>
+                                <span id="brushSizeVal">20px</span>
+                            </div>
+                            <input type="range" id="brushSize" min="2" max="80" value="20" oninput="updateBrushSettings()" class="w-full accent-art-500 cursor-pointer">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-art-800 mb-1">
+                                <span>Şeffaflık (Opaklık)</span>
+                                <span id="brushOpacityVal">80%</span>
+                            </div>
+                            <input type="range" id="brushOpacity" min="10" max="100" value="80" oninput="updateBrushSettings()" class="w-full accent-art-500 cursor-pointer">
+                        </div>
+                    </div>
+
+                    <!-- Palette -->
+                    <div>
+                        <label class="block text-xs font-bold text-art-800 uppercase tracking-wider mb-2">Hızlı Renk Paleti</label>
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <button onclick="setColor('#2b2d42')" class="w-8 h-8 rounded-full border-2 border-white shadow-sm bg-[#2b2d42] hover:scale-110 transition-transform"></button>
+                            <button onclick="setColor('#e07a5f')" class="w-8 h-8 rounded-full border-2 border-white shadow-sm bg-[#e07a5f] hover:scale-110 transition-transform"></button>
+                            <button onclick="setColor('#f4a261')" class="w-8 h-8 rounded-full border-2 border-white shadow-sm bg-[#f4a261] hover:scale-110 transition-transform"></button>
+                            <button onclick="setColor('#2a9d8f')" class="w-8 h-8 rounded-full border-2 border-white shadow-sm bg-[#2a9d8f] hover:scale-110 transition-transform"></button>
+                            <button onclick="setColor('#e9c46a')" class="w-8 h-8 rounded-full border-2 border-white shadow-sm bg-[#e9c46a] hover:scale-110 transition-transform"></button>
+                            <button onclick="setColor('#8d5b4c')" class="w-8 h-8 rounded-full border-2 border-white shadow-sm bg-[#8d5b4c] hover:scale-110 transition-transform"></button>
+                            <button onclick="setColor('#ffffff')" class="w-8 h-8 rounded-full border border-slate-300 shadow-sm bg-white hover:scale-110 transition-transform"></button>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <label for="customColor" class="text-xs font-bold text-slate-600">Özel Renk:</label>
+                            <input type="color" id="customColor" value="#e07a5f" onchange="setColor(this.value)" class="w-10 h-8 rounded cursor-pointer border border-art-200">
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="pt-2 border-t border-art-100 space-y-2">
+                        <div class="flex gap-2">
+                            <button onclick="undoCanvas()" class="flex-1 bg-art-100 hover:bg-art-200 text-art-800 py-2 px-3 rounded-xl text-xs font-bold transition-all">
+                                <i class="fa-solid fa-rotate-left"></i> Geri Al
+                            </button>
+                            <button onclick="clearCanvas()" class="flex-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 py-2 px-3 rounded-xl text-xs font-bold transition-all">
+                                <i class="fa-solid fa-trash-can"></i> Temizle
+                            </button>
+                        </div>
+                        <button onclick="downloadCanvas()" class="w-full bg-art-800 hover:bg-art-900 text-white py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-download"></i> Cihaza İndir (.PNG)
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Canvas Window -->
+                <div class="lg:col-span-8 bg-white p-4 rounded-3xl border border-art-200 shadow-md">
+                    <div class="relative w-full h-[450px] bg-amber-50/40 rounded-2xl overflow-hidden border border-dashed border-art-200 cursor-crosshair">
+                        <canvas id="paintCanvas" class="w-full h-full block touch-none"></canvas>
+                        <div class="absolute bottom-3 right-3 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-[11px] font-semibold text-art-800 pointer-events-none">
+                            💡 Çizim yapmak için fareyi/parmağınızı tuval üzerinde sürükleyin.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FIXED AUTH MODAL (LOGIN / REGISTER WITH TABS) -->
+    <div id="authModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-art-200 p-6 sm:p-8 relative space-y-5">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-lg w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center">
+                <div class="w-12 h-12 rounded-2xl bg-art-100 text-art-500 flex items-center justify-center text-2xl mx-auto mb-3">
+                    <i class="fa-solid fa-user-lock"></i>
+                </div>
+                <h3 id="modalTitle" class="text-xl font-bold text-art-900">Hesap Erişimi</h3>
+                <p id="modalSubtitle" class="text-xs text-slate-500 mt-1">Derslere erişmek ve yönetici panelini kullanmak için oturum açın.</p>
+            </div>
+
+            <!-- Tab Switcher -->
+            <div class="flex rounded-xl bg-slate-100 p-1 text-xs font-bold">
+                <button type="button" id="tabLogin" onclick="switchAuthTab('login')" class="flex-1 py-2 rounded-lg transition-all text-art-900 bg-white shadow-sm">
+                    Giriş Yap
+                </button>
+                <button type="button" id="tabRegister" onclick="switchAuthTab('register')" class="flex-1 py-2 rounded-lg transition-all text-slate-500 hover:text-art-900">
+                    Kayıt Ol
+                </button>
+            </div>
+
+            <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-art-800 uppercase tracking-wider mb-1">Kullanıcı Adı</label>
+                    <input type="text" id="authUsername" required placeholder="Kullanıcı adınızı girin" class="w-full border border-art-200 rounded-xl px-4 py-2.5 text-xs font-semibold focus:ring-2 focus:ring-art-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-art-800 uppercase tracking-wider mb-1">Parola</label>
+                    <input type="password" id="authPassword" required placeholder="••••••••" class="w-full border border-art-200 rounded-xl px-4 py-2.5 text-xs font-semibold focus:ring-2 focus:ring-art-500 outline-none">
+                </div>
+
+                <div id="authErrorMsg" class="hidden text-xs text-red-600 bg-red-50 p-3 rounded-xl border border-red-200 font-semibold"></div>
+
+                <button type="submit" id="authSubmitBtn" class="w-full bg-art-500 hover:bg-art-600 text-white font-bold py-3 rounded-xl text-xs shadow-md transition-all">
+                    Giriş Yap
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-art-900 text-white border-t border-art-800 mt-16 py-8 z-10 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+            <p>Aynur Hoca ile Boyama Teknikleri &copy; GitHub Pages Uyumlu Portalı</p>
+            <p>Sanat ve Eğitim Platformu</p>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE SCRIPT -->
+    <script>
+        /* ===================================================
+           1. AUTHORIZATION & WHITELIST CONFIGURATION
+           =================================================== */
+        const ADMIN_WHITELIST = ["berat", "Berat", "AynurHoca", "AynurAdmin"];
+
+        // Empty array by default (Demo videos removed completely)
+        const DEFAULT_VIDEOS = [];
+
+        let currentUser = null;
+        let currentAuthMode = "login";
+        let videos = [];
+        let bookmarks = [];
+        let activeVideoId = null;
+
+        /* ===================================================
+           2. SHA-256 SECURE PASSWORD HASHING (WEB CRYPTO API)
+           =================================================== */
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        /* ===================================================
+           3. AUTHENTICATION & USER MANAGEMENT LOGIC
+           =================================================== */
+        function initApp() {
+            const storedVideos = localStorage.getItem("aynur_portal_videos");
+            videos = storedVideos ? JSON.parse(storedVideos) : DEFAULT_VIDEOS;
+
+            const sessionUser = localStorage.getItem("aynur_portal_session");
+            if (sessionUser) {
+                currentUser = JSON.parse(sessionUser);
+            }
+
+            const storedBookmarks = localStorage.getItem("aynur_portal_bookmarks");
+            bookmarks = storedBookmarks ? JSON.parse(storedBookmarks) : [];
+
+            updateUserUI();
+            renderVideosCatalog();
+            initCanvas();
+        }
+
+        function openAuthModal(mode = 'login') {
+            currentAuthMode = mode;
+            switchAuthTab(mode);
+            document.getElementById("authErrorMsg").classList.add("hidden");
+            document.getElementById("authModal").classList.remove("hidden");
+        }
+
+        function closeAuthModal() {
+            document.getElementById("authModal").classList.add("hidden");
+        }
+
+        function switchAuthTab(mode) {
+            currentAuthMode = mode;
+            const tabLogin = document.getElementById("tabLogin");
+            const tabRegister = document.getElementById("tabRegister");
+            const submitBtn = document.getElementById("authSubmitBtn");
+
+            document.getElementById("authErrorMsg").classList.add("hidden");
+
+            if (mode === 'login') {
+                tabLogin.className = "flex-1 py-2 rounded-lg transition-all text-art-900 bg-white shadow-sm";
+                tabRegister.className = "flex-1 py-2 rounded-lg transition-all text-slate-500 hover:text-art-900";
+                submitBtn.innerText = "Giriş Yap";
+            } else {
+                tabRegister.className = "flex-1 py-2 rounded-lg transition-all text-art-900 bg-white shadow-sm";
+                tabLogin.className = "flex-1 py-2 rounded-lg transition-all text-slate-500 hover:text-art-900";
+                submitBtn.innerText = "Kayıt Ol";
+            }
+        }
+
+        async function handleAuthSubmit(e) {
+            e.preventDefault();
+            const usernameInput = document.getElementById("authUsername").value.trim();
+            const passwordInput = document.getElementById("authPassword").value;
+            const errorBox = document.getElementById("authErrorMsg");
+
+            errorBox.classList.add("hidden");
+
+            if (!usernameInput || !passwordInput) {
+                errorBox.innerText = "Lütfen kullanıcı adı ve parolanızı girin.";
+                errorBox.classList.remove("hidden");
+                return;
+            }
+
+            const passHash = await hashPassword(passwordInput);
+            let users = JSON.parse(localStorage.getItem("aynur_portal_users") || "{}");
+
+            if (currentAuthMode === 'register') {
+                if (users[usernameInput.toLowerCase()]) {
+                    errorBox.innerText = "Bu kullanıcı adı zaten alınmış!";
+                    errorBox.classList.remove("hidden");
+                    return;
+                }
+
+                users[usernameInput.toLowerCase()] = {
+                    username: usernameInput,
+                    passwordHash: passHash,
+                    registeredAt: new Date().toISOString()
+                };
+
+                localStorage.setItem("aynur_portal_users", JSON.stringify(users));
+                
+                currentUser = { username: usernameInput };
+                localStorage.setItem("aynur_portal_session", JSON.stringify(currentUser));
+                
+                closeAuthModal();
+                updateUserUI();
+                alert(`Tebrikler ${usernameInput}, hesabınız oluşturuldu!`);
+            } else {
+                const existing = users[usernameInput.toLowerCase()];
+                
+                // Direct Whitelist Auto-Login Support for Whitelisted Admins if not registered yet
+                const isWhitelisted = ADMIN_WHITELIST.includes(usernameInput);
+
+                if (existing && existing.passwordHash === passHash) {
+                    currentUser = { username: existing.username };
+                    localStorage.setItem("aynur_portal_session", JSON.stringify(currentUser));
+                    closeAuthModal();
+                    updateUserUI();
+                } else if (!existing && isWhitelisted) {
+                    // Create and log in whitelisted admin automatically
+                    users[usernameInput.toLowerCase()] = {
+                        username: usernameInput,
+                        passwordHash: passHash,
+                        registeredAt: new Date().toISOString()
+                    };
+                    localStorage.setItem("aynur_portal_users", JSON.stringify(users));
+                    currentUser = { username: usernameInput };
+                    localStorage.setItem("aynur_portal_session", JSON.stringify(currentUser));
+                    closeAuthModal();
+                    updateUserUI();
+                } else {
+                    errorBox.innerText = "Kullanıcı adı veya parola hatalı!";
+                    errorBox.classList.remove("hidden");
+                }
+            }
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            localStorage.removeItem("aynur_portal_session");
+            updateUserUI();
+        }
+
+        function updateUserUI() {
+            const loggedOut = document.getElementById("loggedOutState");
+            const loggedIn = document.getElementById("loggedInState");
+            const adminNavBtn = document.getElementById("adminNavBtn");
+            const mobileAdminNavBtn = document.getElementById("mobileAdminNavBtn");
+            const adminSection = document.getElementById("adminSection");
+            const downloadBtn = document.getElementById("downloadVideoBtn");
+
+            if (currentUser) {
+                loggedOut.classList.add("hidden");
+                loggedIn.classList.remove("hidden");
+                document.getElementById("userDisplayName").innerText = currentUser.username;
+
+                const isAdmin = ADMIN_WHITELIST.includes(currentUser.username);
+                document.getElementById("userBadgeRole").innerText = isAdmin ? "Yönetici" : "Öğrenci";
+                document.getElementById("userBadgeRole").className = isAdmin ? 
+                    "bg-art-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase" :
+                    "bg-art-gold text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase";
+
+                if (isAdmin) {
+                    adminNavBtn.classList.remove("hidden");
+                    mobileAdminNavBtn.classList.remove("hidden");
+                    adminSection.classList.remove("hidden");
+                    downloadBtn.classList.remove("hidden");
+                } else {
+                    adminNavBtn.classList.add("hidden");
+                    mobileAdminNavBtn.classList.add("hidden");
+                    adminSection.classList.add("hidden");
+                    downloadBtn.classList.add("hidden");
+                }
+            } else {
+                loggedOut.classList.remove("hidden");
+                loggedIn.classList.add("hidden");
+                adminNavBtn.classList.add("hidden");
+                mobileAdminNavBtn.classList.add("hidden");
+                adminSection.classList.add("hidden");
+                downloadBtn.classList.add("hidden");
+            }
+        }
+
+        function downloadActiveVideo() {
+            if (!currentUser || !ADMIN_WHITELIST.includes(currentUser.username)) {
+                alert("Video indirme yetkiniz bulunmamaktadır.");
+                return;
+            }
+
+            const v = videos.find(item => item.id === activeVideoId);
+            if (!v) return;
+
+            if (v.url.endsWith(".mp4") || v.url.includes("blob:")) {
+                const a = document.createElement("a");
+                a.href = v.url;
+                a.download = `${v.title}.mp4`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } else {
+                window.open(v.url, "_blank");
+            }
+        }
+
+        /* ===================================================
+           4. VIDEO MANAGEMENT & ADMIN FUNCTIONS
+           =================================================== */
+        function renderVideosCatalog(filter = 'all') {
+            const container = document.getElementById("videoCardsGrid");
+            const emptyState = document.getElementById("emptyVideoState");
+            const workspace = document.getElementById("videoPlayerWorkspace");
+
+            const filtered = filter === 'all' ? videos : videos.filter(v => v.category === filter);
+            
+            document.getElementById("videoCountBadge").innerText = `${filtered.length} Video`;
+
+            if (videos.length === 0) {
+                emptyState.classList.remove("hidden");
+                workspace.classList.add("hidden");
+                return;
+            } else {
+                emptyState.classList.add("hidden");
+                workspace.classList.remove("hidden");
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 py-4 text-center">Bu kategoride henüz video eklenmemiş.</p>`;
+                return;
+            }
+
+            if (!activeVideoId && filtered.length > 0) {
+                loadVideoToPlayer(filtered[0].id);
+            }
+
+            const isAdmin = currentUser && ADMIN_WHITELIST.includes(currentUser.username);
+
+            container.innerHTML = filtered.map(v => {
+                const isActive = v.id === activeVideoId;
+                return `
+                    <div onclick="loadVideoToPlayer('${v.id}')" class="p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${isActive ? 'bg-art-500 text-white border-art-500 shadow-md' : 'bg-white hover:bg-art-50 border-art-200 text-art-900'}">
+                        <div class="flex items-center space-x-3 overflow-hidden">
+                            <div class="w-10 h-10 rounded-xl ${isActive ? 'bg-white/20 text-white' : 'bg-art-100 text-art-500'} flex items-center justify-center text-sm flex-shrink-0">
+                                <i class="fa-solid fa-play"></i>
+                            </div>
+                            <div class="truncate">
+                                <h5 class="text-xs font-bold truncate">${v.title}</h5>
+                                <p class="text-[10px] ${isActive ? 'text-white/80' : 'text-slate-500'}">${v.author || 'Aynur Hoca'}</p>
+                            </div>
+                        </div>
+
+                        ${isAdmin ? `
+                            <button onclick="event.stopPropagation(); deleteVideo('${v.id}')" title="Videoyu Sil" class="p-1.5 text-xs ${isActive ? 'text-white/80 hover:text-white' : 'text-slate-400 hover:text-red-600'}">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+            }).join("");
+        }
+
+        function filterCategory(cat) {
+            document.querySelectorAll(".cat-filter-btn").forEach(btn => {
+                btn.className = "cat-filter-btn bg-white border border-art-200 text-art-800 px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all";
+            });
+            event.target.className = "cat-filter-btn active bg-art-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all";
+            renderVideosCatalog(cat);
+        }
+
+        function loadVideoToPlayer(id) {
+            const v = videos.find(item => item.id === id);
+            if (!v) return;
+
+            activeVideoId = id;
+
+            let embedUrl = v.url;
+            if (v.url.includes("watch?v=")) {
+                const vidId = v.url.split("v=")[1].split("&")[0];
+                embedUrl = `https://www.youtube.com/embed/${vidId}`;
+            } else if (!v.url.includes("embed/") && !v.url.endsWith(".mp4")) {
+                embedUrl = `https://www.youtube.com/embed/${v.url}`;
+            }
+
+            document.getElementById("videoIframe").src = embedUrl;
+            document.getElementById("activeVideoTitle").innerText = v.title;
+            document.getElementById("activeVideoCategory").innerText = v.category.toUpperCase();
+            document.getElementById("activeVideoAuthor").innerText = `Eğitmen: ${v.author || 'Aynur Hoca'}`;
+
+            const matContainer = document.getElementById("activeMaterialsList");
+            matContainer.innerHTML = (v.materials && v.materials.length > 0) 
+                ? v.materials.map(m => `<li class="flex items-center gap-2"><i class="fa-solid fa-check text-art-500"></i> ${m}</li>`).join("")
+                : '<li class="text-slate-400 italic">Özel malzeme belirtilmemiş.</li>';
+
+            document.getElementById("activeStepNotes").innerText = v.notes || "Bu ders için not eklenmemiş.";
+
+            renderVideosCatalog();
+        }
+
+        function handleAddNewVideo(e) {
+            e.preventDefault();
+            if (!currentUser || !ADMIN_WHITELIST.includes(currentUser.username)) {
+                alert("Bu işlem için yetkiniz bulunmamaktadır.");
+                return;
+            }
+
+            const title = document.getElementById("newVideoTitle").value.trim();
+            const url = document.getElementById("newVideoUrl").value.trim();
+            const category = document.getElementById("newVideoCategory").value;
+            const materialsRaw = document.getElementById("newVideoMaterials").value;
+            const notes = document.getElementById("newVideoNotes").value;
+
+            const materials = materialsRaw.split(",").map(m => m.trim()).filter(m => m.length > 0);
+
+            const newVid = {
+                id: "vid_" + Date.now(),
+                title,
+                url,
+                category,
+                author: currentUser.username,
+                materials,
+                notes
+            };
+
+            videos.unshift(newVid);
+            localStorage.setItem("aynur_portal_videos", JSON.stringify(videos));
+
+            document.getElementById("newVideoTitle").value = "";
+            document.getElementById("newVideoUrl").value = "";
+            document.getElementById("newVideoMaterials").value = "";
+            document.getElementById("newVideoNotes").value = "";
+
+            renderVideosCatalog();
+            loadVideoToPlayer(newVid.id);
+            alert("Yeni video başarıyla yayınlandı!");
+        }
+
+        function deleteVideo(id) {
+            if (!confirm("Bu videoyu silmek istediğinize emin misiniz?")) return;
+            videos = videos.filter(v => v.id !== id);
+            if (activeVideoId === id) activeVideoId = null;
+            localStorage.setItem("aynur_portal_videos", JSON.stringify(videos));
+            renderVideosCatalog();
+        }
+
+        function toggleBookmarkCurrentVideo() {
+            if (!currentUser) {
+                openAuthModal("login");
+                return;
+            }
+            if (!activeVideoId) return;
+
+            const idx = bookmarks.indexOf(activeVideoId);
+            if (idx > -1) {
+                bookmarks.splice(idx, 1);
+                alert("Ders favorilerden çıkarıldı.");
+            } else {
+                bookmarks.push(activeVideoId);
+                alert("Ders favorilerinize kaydedildi!");
+            }
+            localStorage.setItem("aynur_portal_bookmarks", JSON.stringify(bookmarks));
+        }
+
+        /* ===================================================
+           5. CANVAS LOGIC
+           =================================================== */
+        let canvas, ctx;
+        let isDrawing = false;
+        let brushType = 'flat';
+        let brushColor = '#e07a5f';
+        let brushSize = 20;
+        let brushOpacity = 0.8;
+        let canvasHistory = [];
+
+        function initCanvas() {
+            canvas = document.getElementById("paintCanvas");
+            if (!canvas) return;
+            ctx = canvas.getContext("2d");
+
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+
+            ctx.fillStyle = "#fffdfa";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            saveCanvasState();
+
+            canvas.addEventListener("mousedown", startDrawing);
+            canvas.addEventListener("mousemove", draw);
+            canvas.addEventListener("mouseup", stopDrawing);
+            canvas.addEventListener("mouseleave", stopDrawing);
+
+            canvas.addEventListener("touchstart", (e) => {
+                const touch = e.touches[0];
+                canvas.dispatchEvent(new MouseEvent("mousedown", { clientX: touch.clientX, clientY: touch.clientY }));
+            }, { passive: false });
+
+            canvas.addEventListener("touchmove", (e) => {
+                const touch = e.touches[0];
+                canvas.dispatchEvent(new MouseEvent("mousemove", { clientX: touch.clientX, clientY: touch.clientY }));
+            }, { passive: false });
+
+            canvas.addEventListener("touchend", () => canvas.dispatchEvent(new MouseEvent("mouseup")));
+        }
+
+        function saveCanvasState() {
+            if (canvasHistory.length > 10) canvasHistory.shift();
+            canvasHistory.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+        }
+
+        function undoCanvas() {
+            if (canvasHistory.length > 1) {
+                canvasHistory.pop();
+                ctx.putImageData(canvasHistory[canvasHistory.length - 1], 0, 0);
+            }
+        }
+
+        function clearCanvas() {
+            ctx.fillStyle = "#fffdfa";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            saveCanvasState();
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            draw(e);
+        }
+
+        function stopDrawing() {
+            if (isDrawing) {
+                isDrawing = false;
+                ctx.beginPath();
+                saveCanvasState();
+            }
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            ctx.globalAlpha = brushOpacity;
+            ctx.fillStyle = brushColor;
+            ctx.strokeStyle = brushColor;
+
+            if (brushType === 'flat') {
+                ctx.lineWidth = brushSize;
+                ctx.lineCap = 'butt';
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+            } else if (brushType === 'round') {
+                ctx.lineWidth = brushSize;
+                ctx.lineCap = 'round';
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+            } else if (brushType === 'fan') {
+                for (let i = -3; i <= 3; i++) {
+                    ctx.beginPath();
+                    ctx.arc(x + (i * 4), y + (i * 2), brushSize / 6, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            } else if (brushType === 'sponge') {
+                for (let i = 0; i < 8; i++) {
+                    const offsetX = (Math.random() - 0.5) * brushSize * 1.5;
+                    const offsetY = (Math.random() - 0.5) * brushSize * 1.5;
+                    ctx.beginPath();
+                    ctx.arc(x + offsetX, y + offsetY, Math.random() * (brushSize / 4), 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+
+        function setBrushType(type) {
+            brushType = type;
+            document.querySelectorAll(".brush-btn").forEach(btn => {
+                btn.classList.remove("active", "bg-art-500", "text-white");
+                btn.classList.add("bg-art-50", "text-art-800");
+            });
+            const activeBtn = document.getElementById(`btn-brush-${type}`);
+            if (activeBtn) {
+                activeBtn.classList.add("active", "bg-art-500", "text-white");
+                activeBtn.classList.remove("bg-art-50", "text-art-800");
+            }
+        }
+
+        function setColor(hex) {
+            brushColor = hex;
+            document.getElementById("customColor").value = hex;
+        }
+
+        function updateBrushSettings() {
+            brushSize = document.getElementById("brushSize").value;
+            brushOpacity = document.getElementById("brushOpacity").value / 100;
+            document.getElementById("brushSizeVal").innerText = `${brushSize}px`;
+            document.getElementById("brushOpacityVal").innerText = `${Math.round(brushOpacity * 100)}%`;
+        }
+
+        function downloadCanvas() {
+            const link = document.createElement('a');
+            link.download = 'AynurHoca_Tuval_Calismasi.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        window.onload = function() {
+            initApp();
+        };
+    </script>
+</body>
+</html>
